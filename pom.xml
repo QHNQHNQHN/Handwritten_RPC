@@ -21,6 +21,7 @@
         <module>yrpc-demo/yrpc-springboot-consumer</module>
     </modules>
 
+<!--	定义通用的变量值，提升版本管理统一性与可维护性-->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -33,7 +34,6 @@
         <lombok.version>1.18.26</lombok.version>
         <fastjson2.version>2.0.26</fastjson2.version>
         <hession.version>4.0.66</hession.version>
-        <fastjson2.version>2.0.26</fastjson2.version>
     </properties>
 
     <!-- 父工程版本管理 -->
