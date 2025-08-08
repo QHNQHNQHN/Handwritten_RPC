@@ -13,9 +13,10 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+
 /**
- * @author it楠老师
- * @createTime 2023-06-11
+ * @author QHN
+ * @date 2025/08/07
  */
 public class AppClient implements Serializable {
 
