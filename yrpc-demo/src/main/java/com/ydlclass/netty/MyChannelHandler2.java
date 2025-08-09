@@ -6,9 +6,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.nio.charset.StandardCharsets;
 
+
 /**
- * @author it楠老师
- * @createTime 2023-06-11
+ * @author QHN
+ * @date 2025/08/09
+ * 这里与 服务端的 MyChannelHandler2 类似
  */
 public class MyChannelHandler2 extends ChannelInboundHandlerAdapter {
 
@@ -16,7 +18,6 @@ public class MyChannelHandler2 extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf)msg;
         System.out.println("客户端已经收到了消息：-->" + byteBuf.toString(StandardCharsets.UTF_8));
-        // 可以通过ctx获取channel
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception
