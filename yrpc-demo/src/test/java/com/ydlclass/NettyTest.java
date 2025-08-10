@@ -113,31 +113,41 @@ public class NettyTest {
         System.out.println("Binary representation: " + formattedBinary.toString());
     }
 
+    // 把原始字节数组用 GZIP 压缩，对比压缩前后大小并打印结果
     @Test
     public void testCompress() throws IOException {
+        // 构造原始数据
         byte[] buf = new byte[]{12,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14,12,12,12,12,25,34,23,25,14};
 
-        // 本质就是，将buf作为输入，将结果输出到另一个字节数组当中
+        // 本质就是，将 buf 作为输入，将结果输出到另一个字节数组当中
+        // 内存缓冲输出流，作为压缩结果的承接容器
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // 把 baos 包一层 GZIP 压缩流
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(baos);
-
+        // 把 buf 写入压缩流，写入过程中完成压缩
         gzipOutputStream.write(buf);
+        // 告诉压缩流结束写入
         gzipOutputStream.finish();
-
+        // 从内存缓冲里取出压缩后的全部字节
         byte[] bytes = baos.toByteArray();
         System.out.println(buf.length + "--> " + bytes.length);
         System.out.println(Arrays.toString(bytes));
     }
 
 
+    // 解压测试
     @Test
     public void testDeCompress() throws IOException {
+        // 压缩后的数据
         byte[] buf = new byte[]{31, -117, 8, 0, 0, 0, 0, 0, 0, -1, -29, -31, 1, 2, 73, 37, 113, 73, -66, 65, -62, 0, 0, 25, -102, -59, -115, -111, 0, 0, 0};
 
         // 本质就是，将buf作为输入，将结果输出到另一个字节数组当中
+        // 创建一个内存输入流
         ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+        // 用 GZIPInputStream 包一层内存输入流
         GZIPInputStream gzipInputStream = new GZIPInputStream(bais);
 
+        // 读完所有解压后的字节
         byte[] bytes = gzipInputStream.readAllBytes();
         System.out.println(buf.length + "--> " + bytes.length);
         System.out.println(Arrays.toString(bytes));
