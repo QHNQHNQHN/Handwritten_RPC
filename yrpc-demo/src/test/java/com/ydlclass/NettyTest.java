@@ -53,37 +53,59 @@ public class NettyTest {
         ByteBuf buf3 = byteBuf.slice(6, 15);
     }
 
+    // 测试封装报文
     @Test
     public void testMessage() throws IOException {
+        // 创建一个字节缓冲对象
         ByteBuf message = Unpooled.buffer();
+        // 魔数：ydl
         message.writeBytes("ydl".getBytes(StandardCharsets.UTF_8));
+        // 版本号：1
         message.writeByte(1);
+        // 头部长度：125
         message.writeShort(125);
+        // body 长度
         message.writeInt(256);
+        // 消息类型
         message.writeByte(1);
+        // 序列化类型
         message.writeByte(0);
-        message.writeByte(2);
+        // 请求 id
         message.writeLong(251455L);
-        // 用对象流转化为字节数据
-        AppClient appClient = new AppClient();
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(outputStream);
-        oos.writeObject(appClient);
-        byte[] bytes = outputStream.toByteArray();
+        // 得到 body部分
+        byte[] bytes = getBytes();
+        // 将 body 部分与上面的 header 部门写在一起
         message.writeBytes(bytes);
 
         printAsBinary(message);
 
     }
 
-    public static void printAsBinary(ByteBuf byteBuf) {
-        byte[] bytes = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(byteBuf.readerIndex(), bytes);
 
+    private static byte[] getBytes() throws IOException {
+        AppClient appClient = new AppClient();
+        // ByteArrayOutputStream 是一个内存缓冲流，可以把数据写到内存中的字节数组里
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        // ObjectOutputStream 是对象序列化流，可以把 java 对象转成一串字节
+        ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+        // 把 appClient 对象序列化成二进制。写入 outputStream
+        oos.writeObject(appClient);
+        // 从 ByteArrayOutputStream 中取出刚才序列化得到的全部字节数据。
+        byte[] bytes = outputStream.toByteArray();
+        return bytes;
+    }
+
+    //将 byteBuf 变成一个 16 进制的字节数组
+    public static void printAsBinary(ByteBuf byteBuf) {
+        // 创建一个字节数组保存 ByteBuf 的数据
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        // 把 byteBuf 的数据拷贝到字节数组里
+        byteBuf.getBytes(byteBuf.readerIndex(), bytes);
+        // 把字节数组转成 16 进制字符串
         String binaryString = ByteBufUtil.hexDump(bytes);
         StringBuilder formattedBinary = new StringBuilder();
-
+        // 每两个字符一组，取出后加一个空格
         for (int i = 0; i < binaryString.length(); i += 2) {
             formattedBinary.append(binaryString.substring(i, i + 2)).append(" ");
         }
