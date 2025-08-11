@@ -137,16 +137,23 @@ public class ZookeeperTest {
         }
     }
 
-
+    // 测试 zooKeeper 的 watch 机制
     @Test
     public void testWatcher(){
         try {
-            // 以下三个方法可以注册watcher，可以直接new一个新的watcher，
-            // 也可以使用true来选定默认的watcher
+            /*
+                此处的 true 表示使用默认的 watcher (zookeeper 构造方法里传入的那个 MyWatcher 实例)
+                方法功能：1. 检查节点是否存在。 2. 注册 watcher
+                getChildren() 和 getData() 两个方法均可以注册 watcher
+             */
             zooKeeper.exists("/ydlclass", true);
 //            zooKeeper.getChildren();
 //            zooKeeper.getData();
 
+            /*
+                由于 watcher 回调是异步的，所以会出现 watcher 没有触发，主线程就已经结束
+                这里使用循环保证主线程永不结束。
+             */
             while(true){
                 Thread.sleep(1000);
             }
@@ -163,7 +170,4 @@ public class ZookeeperTest {
             }
         }
     }
-
-
-
 }
