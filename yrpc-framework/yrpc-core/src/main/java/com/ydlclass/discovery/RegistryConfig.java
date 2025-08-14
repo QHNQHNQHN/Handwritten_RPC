@@ -10,7 +10,10 @@ import com.ydlclass.exceptions.DiscoveryException;
  * 从外部配置读取注册中心连接字符串（如 "zookeeper://127.0.0.1:2181"）；
  * 识别是哪种类型的注册中心（zookeeper、nacos、redis 等）；
  * 返回对应实现类（如 ZookeeperRegistry）；
+ * @author QHN
+ * @date 2025/08/13
  */
+
 public class RegistryConfig {
 
     // 定义连接的 url zookeeper://127.0.0.1:2181  redis://192.168.12.125:3306

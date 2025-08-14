@@ -2,9 +2,10 @@ package com.ydlclass;
 
 import com.ydlclass.annotation.TryTimes;
 
+
 /**
- * @author it楠老师
- * @createTime 2023-06-27
+ * @author QHN
+ * @date 2025/08/12
  */
 public interface HelloYrpc {
 

@@ -1,6 +1,9 @@
 package com.ydlclass;
+
 /**
-    常量类，每一个字段都是常量
+ * 常量类，每一个字段都是常量
+ * @author QHN
+ * @date 2025/08/14
  */
 public class Constant {
     

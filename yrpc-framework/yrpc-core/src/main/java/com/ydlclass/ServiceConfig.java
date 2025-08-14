@@ -1,12 +1,15 @@
 package com.ydlclass;
 
 /**
- * @author it楠老师
- * @createTime 2023-06-29
+ * @author QHN
+ * @date 2025/08/13
  */
 public class ServiceConfig<T> {
+    // 接口
     private Class<?> interfaceProvider;
+    // 具体的实现
     private Object ref;
+    // 分组信息
     private String group = "default";
     
     public Class<?> getInterface() {

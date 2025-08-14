@@ -31,7 +31,7 @@ public class ReferenceConfig<T> {
     public T get() {
         // 获取当前线程的类加载器，用于生成代理类。
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        // 设置要实现的接口数组
+        // 把目标接口类型放在数组里，即代理类要实现 interfaceRef 这个接口
         Class<T>[] classes = new Class[]{interfaceRef};
         /*
             创建调用处理器InvocationHandler对象,拦截方法调用的核心逻辑。

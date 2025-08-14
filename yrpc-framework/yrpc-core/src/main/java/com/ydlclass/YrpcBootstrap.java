@@ -33,23 +33,23 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-/**
-    YrpcBootstrap 是整个 YRPC 框架的启动器和上下文配置核心类，采用单例模式。
- | 功能区域              | 具体职责                                               |
- | ----------------- | -------------------------------------------------- |
- |  全局配置管理          | 持有 `Configuration` 对象，用于统一管理注册中心、序列化、压缩、分组等配置      |
- |  服务提供者（Provider） | 提供 `publish()` 方法将服务注册到注册中心（如 Zookeeper），供客户端发现与调用 |
- |  服务消费者（Consumer） | 提供 `reference()` 方法生成动态代理，实现远程调用，集成心跳检测            |
- |  Netty 服务端启动     | 封装 Netty 的启动流程，包括 Handler 注册、端口监听等                 |
- |  扫描注册服务          | 提供 `scan()` 方法，支持通过注解 + 包扫描的方式自动发布服务               |
- |  网络资源与请求管理       | 管理请求线程上下文、连接缓存、未响应请求等数据结构                          |
 
+/**
+ * YrpcBootstrap 是整个 YRPC 框架的启动器和上下文配置核心类，采用单例模式。
+    全局配置管理：持有 Configuration 对象，用于统一管理注册中心、序列化、压缩、分组等配置
+    服务提供者（Provider）：提供 publish() 方法将服务注册到注册中心（如 Zookeeper），供客户端发现与调用
+    服务消费者（Consumer）：提供 reference() 方法生成动态代理，实现远程调用，集成心跳检测
+    Netty 服务端启动：封装 Netty 的启动流程，包括 Handler 注册、端口监听等
+    扫描注册服务：提供 scan() 方法，支持通过注解 + 包扫描的方式自动发布服务
+    网络资源与请求管理 ：管理请求线程上下文、连接缓存、未响应请求等数据结构
+ * @author QHN
+ * @date 2025/08/13
  */
 @Slf4j
 public class YrpcBootstrap {
     
     
-    // YrpcBootstrap是个单例，我们希望每个应用程序只有一个实例
+    // 单例模式(饿汉式单例)的一种实现方法，外部只能通过 getInstance 获取唯一对象，不能自己 new
     private static final YrpcBootstrap yrpcBootstrap = new YrpcBootstrap();
     
     // 全局的配置中心
@@ -71,22 +71,18 @@ public class YrpcBootstrap {
     // 定义全局的对外挂起的 completableFuture
     public final static Map<Long, CompletableFuture<Object>> PENDING_REQUEST = new ConcurrentHashMap<>(128);
     
-    
-    // 维护一个zookeeper实例
-//    private ZooKeeper zooKeeper;
+
     
     private YrpcBootstrap() {
-        // 构造启动引导程序，时需要做一些什么初始化的事
         configuration = new Configuration();
     }
-    
+
+    // 单例模式，通过此方法获取唯一 YrpcBootstrap 对象
     public static YrpcBootstrap getInstance() {
         return yrpcBootstrap;
     }
-    
     /**
-     * 用来定义当前应用的名字
-     *
+     * 定义当前应用的名字
      * @param appName 应用的名字
      * @return this当前实例
      */
@@ -94,12 +90,10 @@ public class YrpcBootstrap {
         configuration.setAppName(appName);
         return this;
     }
-    
     /**
-     * 用来配置一个注册中心
-     *
+     * 配置一个注册中心
      * @param registryConfig 注册中心
-     * @return this当前实例
+     * @return this 当前实例
      */
     public YrpcBootstrap registry(RegistryConfig registryConfig) {
         // 这里维护一个zookeeper实例，但是，如果这样写就会将zookeeper和当前工程耦合
@@ -124,10 +118,9 @@ public class YrpcBootstrap {
     /**
      * ---------------------------服务提供方 provide 的相关 api---------------------------------
      */
-    
+
     /**
      * 发布服务: 将接口及实现类，注册到服务中心 ZOOKEEPER，使得别的客户端可以远程访问这个服务
-     *
      * @param service 封装的需要发布的服务
      * @return this当前实例
      */
@@ -200,8 +193,7 @@ public class YrpcBootstrap {
             }
         }
         
-    }
-    /**
+    }/**
      * ---------------------------服务调用方 consumer 的相关 api---------------------------------
      */
     public YrpcBootstrap reference(ReferenceConfig<?> reference) {

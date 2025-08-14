@@ -3,9 +3,10 @@ package com.ydlclass.impl;
 import com.ydlclass.HelloYrpc2;
 import com.ydlclass.annotation.YrpcApi;
 
+
 /**
- * @author it楠老师
- * @createTime 2023-06-27
+ * @author QHN
+ * @date 2025/08/12
  */
 @YrpcApi
 public class HelloYrpcImpl2 implements HelloYrpc2 {
