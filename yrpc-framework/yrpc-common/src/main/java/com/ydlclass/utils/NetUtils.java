@@ -8,9 +8,13 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+
 /**
-    这段代码定义了一个工具类 NetUtils，
-    其核心功能是：自动获取当前主机的局域网 IPv4 地址，并过滤掉不合适的地址（如虚拟网卡、回环地址、IPv6 等）。
+ * 这段代码定义了一个工具类 NetUtils，
+ * 其核心功能是：自动获取当前主机的局域网 IPv4 地址，并过滤掉不合适的地址（如虚拟网卡、回环地址、IPv6 等）。
+ *
+ * @author QHN
+ * @date 2025/08/14
  */
 @Slf4j
 public class NetUtils {
@@ -34,14 +38,14 @@ public class NetUtils {
                     }
                     String ipAddress = addr.getHostAddress();
                     if(log.isDebugEnabled()){
-                        log.debug("局域网IP地址：{}",ipAddress);
+                        log.debug("局域网 IP 地址：{}",ipAddress);
                     }
                     return ipAddress;
                 }
             }
             throw new NetworkException();
         } catch (SocketException e) {
-            log.error("获取局域网ip时放生异常。", e);
+            log.error("获取局域网 ip 时放生异常。", e);
             throw new NetworkException(e);
         }
     }

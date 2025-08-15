@@ -33,7 +33,6 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 /**
  * YrpcBootstrap 是整个 YRPC 框架的启动器和上下文配置核心类，采用单例模式。
     全局配置管理：持有 Configuration 对象，用于统一管理注册中心、序列化、压缩、分组等配置
@@ -64,8 +63,9 @@ public class YrpcBootstrap {
     public final static Map<InetSocketAddress, Channel> CHANNEL_CACHE = new ConcurrentHashMap<>(16);
     public final static TreeMap<Long, Channel> ANSWER_TIME_CHANNEL_CACHE = new TreeMap<>();
     
-    // 维护已经发布且暴露的服务列表 key-> interface的全限定名  value -> ServiceConfig
-    // 这个映射表是服务提供方用来保存自己暴露的服务实现。通过接口名快速查找对应实现的对象，以便执行请求方法
+    // 维护已经发布且暴露的服务列表 key-> interface 的全限定名  value -> ServiceConfig
+    // 这个映射表是服务提供方用来保存自己暴露的服务实现。
+    // 当收到客户端的远程调用请求后，通过接口名快速查找对应实现的对象，然后反射调用方法。
     public final static Map<String, ServiceConfig<?>> SERVERS_LIST = new ConcurrentHashMap<>(16);
     
     // 定义全局的对外挂起的 completableFuture
@@ -96,7 +96,7 @@ public class YrpcBootstrap {
      * @return this 当前实例
      */
     public YrpcBootstrap registry(RegistryConfig registryConfig) {
-        // 这里维护一个zookeeper实例，但是，如果这样写就会将zookeeper和当前工程耦合
+        // 这里维护一个zookeeper实例，但是，如果这样写就会将 zookeeper 和当前工程耦合
         // 我们其实是更希望以后可以扩展更多种不同的实现
         
         // 尝试使用 registryConfig 获取一个注册中心，有点工厂设计模式的意思了
@@ -125,19 +125,24 @@ public class YrpcBootstrap {
      * @return this当前实例
      */
     public YrpcBootstrap publish(ServiceConfig<?> service) {
-        // 我们抽象了注册中心的概念，使用注册中心的一个实现完成注册
-        // 有人会想，此时此刻难道不是强耦合了吗？
+        /*
+            1. 通过全局配置类 configuration 取到 RegistryConfig
+            2. 再拿到 Registry 接口实例。调用 register 把服务 service 写入注册中心
+         */
         configuration.getRegistryConfig().getRegistry().register(service);
         
-        // 1、当服务调用方，通过接口、方法名、具体的方法参数列表发起调用，提供怎么知道使用哪一个实现
-        // (1) new 一个  （2）spring beanFactory.getBean(Class)  (3) 自己维护映射关系
+        /*
+            把接口全限定名作为 key，把 ServiceConfig 作为 value，存到本地的服务列表
+            1. 当收到 rpc 请求时，用接口名到 SEVERS_LIST 取出 ServiceConfig
+            2. 从 ServiceConfig 拿到真正的实现对象
+            3. 通过反射定位到方法并执行方法，返回结果给调用方
+         */
         SERVERS_LIST.put(service.getInterface().getName(), service);
         return this;
     }
     
     /**
      * 批量发布
-     *
      * @param services 封装的需要发布的服务集合
      * @return this当前实例
      */

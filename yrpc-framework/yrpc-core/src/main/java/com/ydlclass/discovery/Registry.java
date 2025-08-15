@@ -3,10 +3,14 @@ package com.ydlclass.discovery;
 import com.ydlclass.ServiceConfig;
 import java.net.InetSocketAddress;
 import java.util.List;
+
 /**
-     Registry 是 YRPC 框架中服务注册与服务发现的接口规范。
-     将注册中心的功能抽象化，支持多种实现方式（如 Zookeeper、Nacos）。
-     并为服务的动态注册与调用提供基础能力。
+ * Registry 是 YRPC 框架中服务注册与服务发现的接口规范。
+ * 将注册中心的功能抽象化，支持多种实现方式（如 Zookeeper、Nacos）。
+ * 并为服务的动态注册与调用提供基础能力。
+ *
+ * @author QHN
+ * @date 2025/08/14
  */
 public interface Registry {
     /**
@@ -21,6 +25,5 @@ public interface Registry {
      * @param serviceName 接口的全限定名  group 分组名
      * @return 服务的地址(ip地址 + 端口号)
      */
-    List<InetSocketAddress> lookup(String serviceName,String group);
-    
+    List<InetSocketAddress> lookup(String serviceName, String group);
 }

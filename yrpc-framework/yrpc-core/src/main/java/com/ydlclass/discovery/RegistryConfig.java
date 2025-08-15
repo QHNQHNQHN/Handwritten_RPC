@@ -16,17 +16,20 @@ import com.ydlclass.exceptions.DiscoveryException;
 
 public class RegistryConfig {
 
-    // 定义连接的 url zookeeper://127.0.0.1:2181  redis://192.168.12.125:3306
-    private final String connectString;                 //传入的连接地址
+    /*
+        定义连接的 url，此处是 服务提供方配置注册中心时传入的参数
+            zookeeper://127.0.0.1:2181
+            redis://192.168.12.125:3306
+     */
+    private final String connectString;
 
     public RegistryConfig(String connectString) {
         this.connectString = connectString;
     }
-
     /**
-     * 可以使用简单工厂来完成
-     *
+     * 根据 url 获得对应的注册中心实现类实例
      * @return 具体的注册中心实例
+     * 简单的工厂模式：调用者只管传地址，至于具体用哪个实现类，内部帮你选好
      */
     public Registry getRegistry() {
         // 1、获取注册中心的类型
@@ -43,14 +46,23 @@ public class RegistryConfig {
     }
 
 
+    /**
+     * 判断注册中心类型
+     * @param connectString 注册中心连接的 url
+     * @param ifType 开关参数，true 返回类型；false 返回 ip 和端口
+     * @return {@link String }
+     */
     private String getRegistryType(String connectString, boolean ifType) {
+        // 根据 // 分割成
         String[] typeAndHost = connectString.split("://");
         if (typeAndHost.length != 2) {
             throw new RuntimeException("给定的注册中心连接url不合法");
         }
         if (ifType) {
+            // 返回类型：zookeeper
             return typeAndHost[0];
         } else {
+            // 返回 ip 和端口：127.0.0.1:2181
             return typeAndHost[1];
         }
     }

@@ -1,8 +1,9 @@
 package com.ydlclass.exceptions;
 
+
 /**
- * @author it楠老师
- * @createTime 2023-06-29
+ * @author QHN
+ * @date 2025/08/15
  */
 public class DiscoveryException extends RuntimeException{
     

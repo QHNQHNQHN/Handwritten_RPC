@@ -136,6 +136,7 @@ public class ZookeeperUtils {
      */
     public static List<String> getChildren(ZooKeeper zooKeeper, String serviceNode, Watcher watcher) {
         try {
+            // 这里调用了 zooKeeper 原生 api
             return zooKeeper.getChildren(serviceNode, watcher);
         } catch (KeeperException | InterruptedException e) {
             log.error("获取节点【{}】的子元素时发生异常.", serviceNode, e);
